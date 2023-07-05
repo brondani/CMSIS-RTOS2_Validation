@@ -8,7 +8,7 @@
 name: CMSIS-RTOS2 Validation running on Arm Virtual Hardware
 on:
   push:
-    branches: [ main ]
+    branches: [ ci ]
     paths:
       - .github/workflows/cmsis_rv2.yml
       - Include/**/*
@@ -24,16 +24,20 @@ on:
 
 env:
   AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
   AWS_IAM_PROFILE: ${{ secrets.AWS_IAM_PROFILE }}
+  AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
   AWS_SECURITY_GROUP_ID: ${{ secrets.AWS_SECURITY_GROUP_ID }}
   AWS_SUBNET_ID: ${{ secrets.AWS_SUBNET_ID }}
+
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  AWS_RUNNER_ROLE: ${{ secrets.AWS_RUNNER_ROLE }}
 jobs:
   ci_test:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
+      checks: write
 
     steps:
     - name: Check out repository code
@@ -47,7 +51,7 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-          role-to-assume: arn:aws:iam::720528183931:role/Proj-vht-assume-role
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/${{ env.AWS_RUNNER_ROLE }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
     - name: Install AVH Client for Python
