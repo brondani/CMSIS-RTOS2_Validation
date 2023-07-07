@@ -26,6 +26,7 @@ steps:
       echo "cbuild    : $(which cbuild)"
       echo "cpackget  : $(which cpackget)"
       echo "csolution : $(which csolution)"
+      printenv
 
       cpackget update-index 2>&1
       cpackget add -a -f cpacklist.txt 2>&1
