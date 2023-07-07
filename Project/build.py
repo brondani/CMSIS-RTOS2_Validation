@@ -97,6 +97,7 @@ def build(config, results):
 
     logging.info("Compiling Tests...")
 
+    yield test(config)
     yield cbuild(config)
 
     if not all(r.success for r in results):
@@ -148,6 +149,9 @@ def cbuild(config):
                       "--toolchain", config.compiler.toolchain,          \
                       "--context", f".{config.rtos}+{config.device[1]}"]
 
+@matrix_command()
+def test(config):
+    return ["cbuild"]
 
 @matrix_command(test_report=ConsoleReport() |
                             CropReport('<\?xml version="1.0"\?>', '</report>') |
